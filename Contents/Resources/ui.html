@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="brief-ui" content="32">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
+<style>
+/* Лише системні шрифти й кольори WebKit — тема перемикається разом із macOS. */
+:root{
+  color-scheme: light dark;
+  --ink: -apple-system-label;
+  --ink2: -apple-system-secondary-label;
+  --ink3: -apple-system-tertiary-label;
+  --sep: -apple-system-separator;
+  --accent: -apple-system-control-accent;
+  --link: -apple-system-blue;
+  --bg: -apple-system-text-background;
+  --card: color-mix(in srgb, -apple-system-label 4.5%, transparent);
+  --cardLine: color-mix(in srgb, -apple-system-label 7%, transparent);
+  --fs: 16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink)}
+body{font:var(--fs)/1.55 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+     -webkit-font-smoothing:antialiased;letter-spacing:-.003em}
+::selection{background:color-mix(in srgb,var(--accent) 28%,transparent)}
+#wrap{max-width:70ch;margin:0 auto;padding:26px 32px 56px}
+#note{font-size:12px;color:var(--ink3);margin:0 0 14px}
+#note:empty{display:none}
+
+/* ── Оригінал ──────────────────────────────────────── */
+#doc.orig *{color:inherit !important;font-family:inherit !important;font-size:inherit !important;
+       background-color:transparent !important;border-color:var(--sep) !important;
+       max-width:100% !important;line-height:inherit}
+#doc.orig h1,#doc.orig h2,#doc.orig h3,#doc.orig h4{line-height:1.25;font-weight:650;margin:1.5em 0 .45em;letter-spacing:-.012em}
+#doc.orig h1{font-size:1.5em !important} #doc.orig h2{font-size:1.28em !important}
+#doc.orig h3{font-size:1.1em !important} #doc.orig h4{font-size:1em !important}
+#doc.orig>*:first-child{margin-top:0}
+#doc.orig p{margin:0 0 .85em}
+#doc.orig a{color:var(--link) !important;text-decoration:none}
+#doc.orig a:hover{text-decoration:underline}
+#doc.orig ul,#doc.orig ol{margin:0 0 .9em;padding-left:1.4em}
+#doc.orig li{margin:.25em 0}
+#doc.orig li::marker{color:var(--ink3)}
+#doc.orig strong,#doc.orig b{font-weight:650}
+#doc.orig blockquote{margin:1em 0;padding:.1em 0 .1em 1em;border-left:3px solid var(--sep);color:var(--ink2) !important}
+#doc.orig code,#doc.orig pre{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;font-size:.88em !important;
+                   background:var(--card) !important;border-radius:6px;padding:.1em .35em}
+#doc.orig pre{padding:.75em 1em;overflow:auto;border-radius:10px}
+#doc.orig hr{border:0;border-top:1px solid var(--sep);margin:1.6em 0}
+#doc.orig img{height:auto;border-radius:10px;display:block;margin:1em 0}
+#doc.orig table{border-collapse:separate;border-spacing:0;width:100%;margin:1em 0;font-size:.94em !important;
+           border:1px solid var(--cardLine) !important;border-radius:12px;overflow:hidden}
+#doc.orig th,#doc.orig td{border:0 !important;border-bottom:1px solid var(--cardLine) !important;
+                padding:.5em .75em;text-align:left;vertical-align:top}
+#doc.orig tr:last-child th,#doc.orig tr:last-child td{border-bottom:0 !important}
+#doc.orig th{color:var(--ink2) !important;font-weight:600;background:var(--card) !important}
+/* Підпис секції — як заголовок групи в Системних параметрах. */
+#doc.orig [data-sec]{border:0 !important;border-top:1px solid var(--sep) !important;
+  margin:2em 0 .6em !important;padding:1em 0 0 !important;color:var(--ink2) !important;
+  font-size:13px !important;font-weight:600 !important;text-align:left !important}
+#doc.orig [data-sec] *{color:var(--ink2) !important;font-weight:600 !important;font-size:13px !important}
+#doc.orig>[data-sec]:first-child{border-top:0 !important;margin-top:0 !important;padding-top:0 !important}
+#doc.orig td[data-sec],#doc.orig th[data-sec],#doc.orig tr[data-sec]>td,#doc.orig tr[data-sec]>th{
+  border:0 !important;border-top:1px solid var(--sep) !important;margin:0 !important;
+  padding:1em 0 .3em !important;background:transparent !important}
+#doc.orig table:has([data-sec]){border:0 !important;margin:1.4em 0 !important;border-radius:0}
+#doc.orig table:has([data-sec]) td,#doc.orig table:has([data-sec]) th{border:0 !important;padding:.12em 0 !important}
+#doc.orig span[data-sec]{display:block !important}
+
+/* Підпис поля (LOGO, HEADLINE, CTA…) — маленький сірий підпис над значенням. */
+#doc [data-field]{display:block;font-size:11px !important;font-weight:600 !important;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink3) !important;text-align:left !important;
+  margin:1em 0 .15em !important;padding:0 !important;border:0 !important;background:transparent !important}
+#doc [data-field] *{font-size:inherit !important;font-weight:inherit !important;color:inherit !important}
+#doc.blocks .blk>[data-field]:first-child{margin-top:0 !important}
+
+/* ── Оформлено: блок товарів — картка, як група в Системних параметрах ─ */
+#doc.orig .card{background:var(--card) !important;border-radius:14px;padding:12px 18px 14px;margin:1em 0}
+#doc.orig .card-title{font-size:13px !important;font-weight:600;color:var(--ink2) !important;margin:0 0 6px;
+                      letter-spacing:0;line-height:1.4}
+#doc.orig .card-body p{margin:0 0 .55em}
+#doc.orig .card-body p:last-child{margin-bottom:0}
+#doc.orig .card-body p.h{font-weight:650}
+#doc.orig .items{list-style:none;margin:0 !important;padding:0 !important}
+#doc.orig .items li{display:grid;grid-template-columns:1.7em 1fr;gap:0 6px;padding:9px 0;margin:0}
+#doc.orig .items li + li{border-top:.5px solid var(--sep)}
+#doc.orig .items li:first-child{padding-top:2px}
+#doc.orig .items .num{color:var(--ink3) !important;font-variant-numeric:tabular-nums;font-weight:600}
+#doc.orig .items .item-body p{margin:0 0 .3em}
+#doc.orig .items .item-body p:last-child{margin:0}
+/* Порожній рядок оригіналу (ClickUp, Google Docs: порожній абзац) — відступ між секціями. */
+#doc.orig .gap{display:block;height:.9em !important;min-height:0 !important;margin:0 !important;
+               padding:0 !important;overflow:hidden;border:0 !important}
+#doc.orig .gap + .gap{display:none}
+#doc.orig .list-note{border-top:1px dashed var(--sep);margin-top:6px;padding-top:10px}
+
+/* ── Блоками: кожна секція — окрема картка ─────────────────────────
+   Лише візуальний поділ наявного тексту; нічого не додається й не переписується. */
+#doc.blocks .gap{display:none !important}
+#doc.blocks .blk{display:block;background:var(--card) !important;border:1px solid var(--cardLine);
+  border-radius:14px;padding:16px 22px 18px;margin:0 0 14px}
+#doc.blocks .blk>:first-child{margin-top:0 !important}
+#doc.blocks .blk>:last-child{margin-bottom:0 !important}
+#doc.blocks .blk>[data-sec]{font-size:1.18em !important;font-weight:700 !important;color:var(--ink) !important;
+  letter-spacing:-.012em;line-height:1.3;text-align:left !important;
+  border:0 !important;border-bottom:1px solid var(--sep) !important;
+  margin:0 0 .8em !important;padding:0 0 .6em !important}
+#doc.blocks .blk>[data-sec] *{font-size:inherit !important;font-weight:inherit !important;color:inherit !important}
+#doc.blocks .blk .card{background:color-mix(in srgb,-apple-system-label 5%,transparent) !important;margin:.9em 0}
+#doc.blocks .blk>.card:first-child{margin-top:0}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="note"></div><div id="doc"></div></div>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+let lastId = null;
+window.__render = function(s){
+  document.documentElement.style.setProperty("--fs", (s.fontSize || 16) + "px");
+  $("note").textContent = s.note || "";
+  const doc = $("doc");
+  doc.className = "orig " + (s.blocks ? "blocks" : "flat");
+  doc.innerHTML = s.html || "";
+  for (const c of (s.cards || [])) applyCard(doc, c);
+  markGaps(doc);
+  if (s.blocks) applyBlocks(doc);
+  if (s.id !== lastId){ window.scrollTo(0, 0); lastId = s.id; }
+};
+
+// Замінює блок товарів карткою. Лише якщо на цьому місці документа стоять
+// рівно фрагменти цього блоку — інакше документ лишається як в оригіналі.
+const WRAPPERS = ["UL", "OL", "DL", "TABLE", "THEAD", "TBODY", "TFOOT", "TR"];
+function applyCard(doc, c){
+  const ids = c.ids.slice().sort((a, b) => a - b);
+  const first = doc.querySelector('i[data-u="' + ids[0] + '"]');
+  const last = doc.querySelector('i[data-u="' + ids[ids.length - 1] + '"]');
+  if (!first || !last) return;
+  const r = document.createRange();
+  r.setStartBefore(first); r.setEndAfter(last);
+  let anc = r.commonAncestorContainer;
+  if (anc.nodeType !== 1) anc = anc.parentNode;
+  while (anc !== doc && WRAPPERS.includes(anc.tagName)) anc = anc.parentNode;
+  const top = (n) => { while (n.parentNode !== anc) n = n.parentNode; return n; };
+  const A = top(first), B = top(last);
+  const nodes = [];
+  for (let n = A; n; n = n.nextSibling){ nodes.push(n); if (n === B) break; }
+  const inside = new Set();
+  for (const n of nodes){
+    if (n.nodeType !== 1) continue;
+    if (n.matches("i[data-u]")) inside.add(+n.dataset.u);
+    n.querySelectorAll("i[data-u]").forEach((m) => inside.add(+m.dataset.u));
+  }
+  if (inside.size !== ids.length || ids.some((i) => !inside.has(i))) return;
+  const box = document.createElement("div");
+  box.innerHTML = c.html;
+  A.parentNode.insertBefore(box.firstElementChild, A);
+  nodes.forEach((n) => n.remove());
+}
+// Порожні абзаци й рядки (<p></p>, <div><br></div>) без стилів редактора
+// схлопуються в нуль — і секції зливаються. Робимо з них видимий відступ.
+const SOLID = "img,svg,video,iframe,hr,table,ul,ol,li,input,canvas,picture,i[data-u]";
+function markGaps(doc){
+  for (const el of doc.querySelectorAll("p,div")){
+    if (el.closest(".card")) continue;
+    if (el.textContent.replace(/[\s\u00a0\u200b]/g, "") !== "") continue;
+    if (el.querySelector(SOLID) || el.querySelector("p,div")) continue;
+    el.classList.add("gap");
+  }
+}
+
+// «Блоками»: кладе наявні вузли документа в картки-секції. Секція — від підпису
+// (data-sec) до наступного підпису. Без підписів поділ іде по порожніх рядках,
+// а якщо їх немає — увесь документ одна картка.
+const SKIP_TAGS = new Set(["META", "STYLE", "SCRIPT", "LINK", "TITLE"]);
+const FLOW_TAGS = new Set(["DIV", "SECTION", "ARTICLE", "MAIN", "BODY", "CENTER", "HTML", "SPAN"]);
+function meaningful(n){
+  if (n.nodeType === 3) return n.nodeValue.replace(/[\s\u00a0\u200b]/g, "") !== "";
+  if (n.nodeType !== 1) return false;
+  return !(SKIP_TAGS.has(n.tagName) || n.matches("i[data-u]") || n.classList.contains("gap"));
+}
+const isHead = (n) => n.nodeType === 1 && n.hasAttribute("data-sec");
+const hasSec = (n) => n.nodeType === 1 && (n.hasAttribute("data-sec") || !!n.querySelector("[data-sec]"));
+function sectionRoot(doc){
+  let root = doc;
+  for (;;){
+    const kids = [...root.childNodes].filter(meaningful);
+    if (kids.length !== 1) return root;
+    const k = kids[0];
+    if (k.nodeType !== 1 || !FLOW_TAGS.has(k.tagName) || isHead(k) || k.classList.contains("card")) return root;
+    root = k;
+  }
+}
+function applyBlocks(doc){
+  const root = sectionRoot(doc);
+  const sections = hasSec(root);
+  const groups = [];
+  let cur = null;
+  for (const n of [...root.childNodes]){
+    if (sections){
+      if (!cur || isHead(n) || (meaningful(n) && hasSec(n))){ cur = []; groups.push(cur); }
+      cur.push(n);
+    } else if (n.nodeType === 1 && n.classList.contains("gap")){
+      cur = null;
+    } else {
+      if (!cur){ cur = []; groups.push(cur); }
+      cur.push(n);
+    }
+  }
+  for (const g of groups){
+    if (!g.some(meaningful)) continue;
+    const sec = document.createElement("section");
+    sec.className = "blk";
+    root.insertBefore(sec, g[0]);
+    g.forEach((n) => sec.appendChild(n));
+  }
+}
+window.webkit.messageHandlers.brief.postMessage({ action: "ready" });
+</script>
+</body>
+</html>
